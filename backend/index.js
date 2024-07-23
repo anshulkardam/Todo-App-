@@ -1,9 +1,10 @@
 const express = require("express")
 const { createTodo, updateTodos } = require("./types")
 const { todo } = require("./db")
+const cors = require("cors")
 const app = express()
 app.use(express.json())
-
+app.use(cors())
 app.post("/todo", async function (req, res) {
 
     const createPayload = req.body
@@ -20,14 +21,17 @@ app.post("/todo", async function (req, res) {
         description: createPayload.description,
         completed: false
     })
+    res.json({
+        message: "Todo Created!"
+    })
 
 })
 app.get("/todos", async function (req, res) {
     const alltodos = await todo.find({})
     res.json({ alltodos })
 })
-app.put("/completed", function (req, res) {
-    const updatePayload = req.body
+app.put("/completed", async function (req, res) {
+    const updatePayload = req.body     // give Id
     const parsedPayload = updateTodos.safeParse(updatePayload)
     if (!parsedPayload.success) {
         res.status(411).json({
@@ -46,5 +50,5 @@ app.put("/completed", function (req, res) {
     })
 })
 
-
+app.listen(3000)
 
